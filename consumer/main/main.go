@@ -6,10 +6,14 @@ import (
 	"os"
 	"os/signal"
 
+	"kafka/consumer/data"
+
 	"github.com/IBM/sarama"
 )
 
 func main(){
+	db := data.NewData()
+	defer db.CloseDb()
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 
@@ -34,9 +38,12 @@ func main(){
 		for {
 			select{
 			case msg := <-partitionConsumer.Messages():
-				fmt.Println(msg.Offset)
-				fmt.Println(string(msg.Value))
+				err := db.InsertQuery(consumed ,string(msg.Value))
+				if err != nil{
+					log.Fatalln(err)
+				}
 				consumed++
+				fmt.Println(consumed)
 			case <-signals:
 				break ConsumerLoop
 			}
@@ -50,5 +57,6 @@ func main(){
 		if err := partitionConsumer.Close(); err != nil {
 			log.Fatalln("Failed to close consumer", err)
 		}
+	
 }
 

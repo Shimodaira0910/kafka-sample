@@ -16,7 +16,7 @@ func main(){
 	for i := 0; i < 100; i++{
 		message := &sarama.ProducerMessage{
 			Topic: "test-topic",
-			Value: sarama.StringEncoder("TEST MESSAGE!!" + string(i)),
+			Value: sarama.StringEncoder("testMessage" + string(i)),
 		}
 
 		partition, offset, err := producer.SendMessage(message)
