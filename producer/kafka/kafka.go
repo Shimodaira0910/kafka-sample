@@ -1,13 +1,14 @@
-package main
+package kafka
 
-import (
+import(
 	"fmt"
 	"log"
 	"github.com/IBM/sarama"
 )
 
-func main(){
-	fmt.Println("test")
+type Kafka struct{}
+
+func(k *Kafka) Producer(){
 	producer , err := initProducer()
 	if err != nil{
 		log.Fatalln("error initialize producer:", err)
@@ -28,10 +29,9 @@ func main(){
 		}
 		fmt.Printf("ok! %d", i)
 	}
-
 }
 
-func initProducer()(sarama.SyncProducer, error){
+func initProducer() (sarama.SyncProducer, error) {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Retry.Max = 5
